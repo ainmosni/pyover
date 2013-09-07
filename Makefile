@@ -39,7 +39,7 @@ coverage:
 	coverage run --source pyover setup.py test
 	coverage report -m
 	coverage html
-	open htmlcov/index.html
+	xdg-open htmlcov/index.html
 
 docs:
 	rm -f docs/pyover.rst
