@@ -57,6 +57,21 @@ class TestPyover(unittest.TestCase):
 
     @unittest.skipUnless(
         (os.environ.get('PUSHOVER_API_TOKEN')
+         and os.environ.get('PUSHOVER_USER_KEY')
+         and os.environ.get('PUSHOVER_DEVICE')),
+        '`PUSHOVER_USER_KEY`, `PUSHOVER_API_TOKEN` `PUSHOVER_DEVICE` are not set.')
+    def test_message_with_device(self):
+        """
+        Test sending a correct message.
+        """
+        self.test_instance = PyOver(self.token,
+                                    self.user_key,
+                                    os.environ['PUSHOVER_DEVICE'])
+        output = self.test_instance.send_message('Test message with device.')
+        self.assertEqual(output['status'], 1)
+
+    @unittest.skipUnless(
+        (os.environ.get('PUSHOVER_API_TOKEN')
          and os.environ.get('PUSHOVER_USER_KEY')),
         'Variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
     def test_message_with_title(self):
@@ -122,7 +137,7 @@ class TestPyover(unittest.TestCase):
         Test sending a message with all priorities set.
         """
         for priority in range(-1, 3):
-            output = self.test_instance.send_message('Test message ith prio {}'
+            output = self.test_instance.send_message('Test message with pri {}'
                                                      .format(priority),
                                                      prority=priority)
             self.assertEqual(output['status'], 1)

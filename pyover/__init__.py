@@ -6,4 +6,5 @@ __email__ = 'daniel@ams-sec.org'
 __version__ = '0.1.0'
 
 from .pyover import PyOver
+# Keep pyflakes happy.
 assert PyOver
