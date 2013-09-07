@@ -44,14 +44,15 @@ class TestPyover(unittest.TestCase):
 
     @unittest.skipUnless(
         (os.environ.get('PUSHOVER_API_TOKEN')
-         and os.environg.get('PUSHOVER_USER_KEY')),
+         and os.environ.get('PUSHOVER_USER_KEY')),
         'The environment variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
     def test_message(self):
         """
         Test sending a correct message.
         """
         test_instance = PyOver(self.token, self.user_key)
-        print(test_instance.send_message("Test message"))
+        output = test_instance.send_message("Test message")
+        self.assertEqual(output['status'], 1)
 
     def tearDown(self):
         pass
