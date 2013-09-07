@@ -48,10 +48,10 @@ class PyOver(object):
             - timestamp: Timestamp of the message.
             - sound: Sound for the message to trigger.
         """
+        # TODO: Do sanity checking on the arguments, make timestamp accept
+        # datetimestamps, error out when given invalid parameters.
         optional_args = ['title', 'url', 'url_title', 'priority', 'timestamp',
                          'sound']
-        if not message:
-            raise RuntimeError('No message to send.')
 
         message_params = {arg: kwargs[arg]
                           for arg in optional_args

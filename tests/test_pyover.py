@@ -20,39 +20,112 @@ class TestPyover(unittest.TestCase):
     def setUp(self):
         self.token = os.environ.get('PUSHOVER_API_TOKEN', False)
         self.user_key = os.environ.get('PUSHOVER_USER_KEY', False)
+        if self.token and self.user_key:
+            self.test_instance = PyOver(self.token, self.user_key)
 
     def test_no_token(self):
         """
         Test if passing no token gives a RuntimeError.
         """
-        self.assertRaises(RuntimeError, PyOver, '', 'asdas')
+        self.assertRaises(RuntimeError, PyOver, '', 'deadbeaf')
 
     def test_no_user_key(self):
         """
         Test if passing no token gives a RuntimeError.
         """
-        self.assertRaises(RuntimeError, PyOver, 'asdas', '')
+        self.assertRaises(RuntimeError, PyOver, 'deadbeaf', '')
 
     def test_wrong_credentials(self):
         """
         Test what happens when trying to send a message with the wrong creds.
         """
-        test_instance = PyOver('foo', 'foo')
+        failed_instance = PyOver('deadbeaf', 'deadbeaf')
         self.assertRaises(requests.HTTPError,
-                          test_instance.send_message,
+                          failed_instance.send_message,
                           'Test message!')
 
     @unittest.skipUnless(
         (os.environ.get('PUSHOVER_API_TOKEN')
          and os.environ.get('PUSHOVER_USER_KEY')),
-        'The environment variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
+        'Variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
     def test_message(self):
         """
         Test sending a correct message.
         """
-        test_instance = PyOver(self.token, self.user_key)
-        output = test_instance.send_message("Test message")
+        output = self.test_instance.send_message('Test message')
         self.assertEqual(output['status'], 1)
+
+    @unittest.skipUnless(
+        (os.environ.get('PUSHOVER_API_TOKEN')
+         and os.environ.get('PUSHOVER_USER_KEY')),
+        'Variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
+    def test_message_with_title(self):
+        """
+        Tests sending a message with a custom title.
+        """
+        output = self.test_instance.send_message('Test message with title.',
+                                                 title='Some custom title.')
+        self.assertEqual(output['status'], 1)
+
+    @unittest.skipUnless(
+        (os.environ.get('PUSHOVER_API_TOKEN')
+         and os.environ.get('PUSHOVER_USER_KEY')),
+        'Variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
+    def test_message_with_url(self):
+        """
+        Tests sending a message with a URL attached.
+        """
+        output = self.test_instance.send_message(
+            'Test message with URL.',
+            url='https://github.com/ainmosni/pyover'
+        )
+        self.assertEqual(output['status'], 1)
+
+    @unittest.skipUnless(
+        (os.environ.get('PUSHOVER_API_TOKEN')
+         and os.environ.get('PUSHOVER_USER_KEY')),
+        'Variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
+    def test_message_with_url_title(self):
+        """
+        Tests sending a message with a URL and title attached.
+        """
+        output = self.test_instance.send_message(
+            'Test message with URL and URL title.',
+            url='https://github.com/ainmosni/pyover',
+            url_title='PyOver github page.'
+        )
+        self.assertEqual(output['status'], 1)
+
+    @unittest.skipUnless(
+        (os.environ.get('PUSHOVER_API_TOKEN')
+         and os.environ.get('PUSHOVER_USER_KEY')),
+        'Variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
+    def test_message_with_timestamp(self):
+        """
+        Tests sending a message with a custom timestamp.
+        """
+        import datetime
+        import calendar
+        timestamp = datetime.datetime(1981, 10, 26, 4, 35)
+        output = self.test_instance.send_message(
+            'Test message with timestamp.',
+            timestamp=calendar.timegm(timestamp.utctimetuple())
+        )
+        self.assertEqual(output['status'], 1)
+
+    @unittest.skipUnless(
+        (os.environ.get('PUSHOVER_API_TOKEN')
+         and os.environ.get('PUSHOVER_USER_KEY')),
+        'Variables `PUSHOVER_USER_KEY` and `PUSHOVER_API_TOKEN` are not set.')
+    def test_message_with_priorities(self):
+        """
+        Test sending a message with all priorities set.
+        """
+        for priority in range(-1, 3):
+            output = self.test_instance.send_message('Test message ith prio {}'
+                                                     .format(priority),
+                                                     prority=priority)
+            self.assertEqual(output['status'], 1)
 
     def tearDown(self):
         pass
