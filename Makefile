@@ -26,7 +26,9 @@ clean-pyc:
 lint:
 	flake8 pyover tests
 
-test:
+test: test2 test3
+
+test2:
 	python2 setup.py test
 
 test3:
@@ -49,9 +51,19 @@ docs:
 	$(MAKE) -C docs html
 	open docs/_build/html/index.html
 
-release: clean
-	python setup.py sdist upload
+release: release2 release3
 
-sdist: clean
-	python setup.py sdist
+release2: clean
+	python2 setup.py sdist upload
+
+release3: clean
+	python3 setup.py sdist upload
+
+sdist: sdist2 sdist3
+
+sdist2: clean
+	python2 setup.py sdist
 	ls -l dist
+
+sdist3: clean
+	python3 setup.py sdist
