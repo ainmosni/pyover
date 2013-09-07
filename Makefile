@@ -27,7 +27,10 @@ lint:
 	flake8 pyover tests
 
 test:
-	python setup.py test
+	python2 setup.py test
+
+test3:
+	python3 setup.py test
 
 test-all:
 	tox
