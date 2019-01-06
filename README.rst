@@ -2,6 +2,8 @@
 PyOver
 ===============================
 
+**Not used anymore, development ceased ages ago**
+
 Python module to interface with Pushover.
 
 * Free software: BSD license
